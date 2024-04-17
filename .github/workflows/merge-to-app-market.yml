@@ -1,0 +1,43 @@
+name: Auto Merge to each branches
+
+on:
+  push:
+    branches:
+      - app-market
+
+env:
+  GH_TOKEN: ${{ github.token }}
+
+jobs:
+  merge:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: generate token
+        id: generate_token
+        uses: tibdex/github-app-token@v1
+        with:
+          app_id: ${{ secrets.DEPLOY_BOT_APP_ID }}
+          private_key: ${{ secrets.DEPLOY_BOT_PRIVATE_KEY }}
+
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Merge to all branches
+        run: |
+          BRANCHES=(
+            app-market-gear
+          )
+          for BRANCH in "${BRANCHES[@]}"; do
+            git checkout -b merge-branch-$BRANCH
+            git merge app-market --no-edit
+            git push origin merge-branch-$BRANCH
+            gh pr create --title "Merge app-market to $BRANCH" --body "" --base $BRANCH --head merge-branch-$BRANCH
+            gh pr merge --merge merge-branch-$BRANCH
+            git checkout app-market
+            git branch -d merge-branch-$BRANCH
+          done
+        env:
+          GH_TOKEN: ${{ steps.generate_token.outputs.token }}
