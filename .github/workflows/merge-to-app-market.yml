@@ -46,6 +46,7 @@ jobs:
             app-market-gear
           )
           for BRANCH in "${BRANCHES[@]}"; do
+            git pull origin app-market
             git checkout -b merge-branch-$BRANCH
             git merge app-market --no-edit
             git push origin merge-branch-$BRANCH
