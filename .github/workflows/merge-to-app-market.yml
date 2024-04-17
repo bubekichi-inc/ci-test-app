@@ -7,6 +7,9 @@ on:
 
 permissions:
   actions: write
+  checks: write
+  contents: write
+  deployments: write
   pull-requests: write
 
 env:
