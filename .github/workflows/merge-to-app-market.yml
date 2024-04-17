@@ -48,7 +48,7 @@ jobs:
           for BRANCH in "${BRANCHES[@]}"; do
             git checkout -b merge-branch-$BRANCH
             git merge app-market --no-edit
-            git push origin head
+            git push origin merge-branch-$BRANCH
             gh pr create --title "Merge app-market to $BRANCH" --body "" --base $BRANCH --head merge-branch-$BRANCH
             gh pr merge --merge merge-branch-$BRANCH
             git checkout app-market
