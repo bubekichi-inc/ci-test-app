@@ -6,7 +6,6 @@ on:
       - app-market
 
 permissions:
-  # actions: write
   contents: write
 
 env:
